@@ -284,7 +284,7 @@ Edita `config_visual.json` para cambiar colores, tamaños y animación sin tocar
 | **Universidad** | Universidad Tecnológica de Pereira |
 | **Curso** | Estructuras de Datos |
 | **Programa** | Ingeniería de Sistemas |
-| **Año** | 2025 |
+| **Año** | 2026 |
 
 ---
 
@@ -295,5 +295,5 @@ Este proyecto fue desarrollado con fines académicos para la Universidad Tecnol�
 ---
 
 <div align="center">
-  <sub>Hecho con C, Python y JavaScript · Universidad Tecnológica de Pereira · 2025</sub>
+  <sub>Hecho con C, Python y JavaScript · Universidad Tecnológica de Pereira · 2026</sub>
 </div>
