@@ -1,0 +1,62 @@
+{
+  "_instrucciones": {
+    "congestion": "Factor que multiplica el tiempo base de cada camino segun la hora",
+    "hora_actual": "Hora en formato 24h que el sistema usara para calcular congestion",
+    "hora_automatica": "Si es true, usa la hora real del sistema e ignora hora_actual"
+  },
+
+  "sistema": {
+    "hora_automatica": true,
+    "hora_actual": 8,
+    "mostrar_todas_distancias": true,
+    "mostrar_ruta_en_consola": true
+  },
+
+  "congestion": {
+    "_descripcion": "Cada franja define el factor que multiplica el tiempo base",
+    "_ejemplo": "factor 2.0 significa que los caminos tardan el doble",
+
+    "madrugada": {
+      "hora_inicio": 0,
+      "hora_fin": 5,
+      "factor": 0.7,
+      "etiqueta": "Madrugada — via libre"
+    },
+    "manana_pico": {
+      "hora_inicio": 6,
+      "hora_fin": 9,
+      "factor": 2.5,
+      "etiqueta": "Manana hora pico"
+    },
+    "manana_normal": {
+      "hora_inicio": 10,
+      "hora_fin": 12,
+      "factor": 1.2,
+      "etiqueta": "Manana flujo normal"
+    },
+    "mediodia": {
+      "hora_inicio": 12,
+      "hora_fin": 14,
+      "factor": 1.5,
+      "etiqueta": "Mediodia — trafico moderado"
+    },
+    "tarde_normal": {
+      "hora_inicio": 14,
+      "hora_fin": 17,
+      "factor": 1.0,
+      "etiqueta": "Tarde flujo normal"
+    },
+    "tarde_pico": {
+      "hora_inicio": 17,
+      "hora_fin": 20,
+      "factor": 2.8,
+      "etiqueta": "Tarde hora pico — maxima congestion"
+    },
+    "noche": {
+      "hora_inicio": 20,
+      "hora_fin": 23,
+      "factor": 0.9,
+      "etiqueta": "Noche — trafico bajo"
+    }
+  }
+}

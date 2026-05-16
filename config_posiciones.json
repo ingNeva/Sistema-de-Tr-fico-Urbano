@@ -1,0 +1,31 @@
+{
+  "_instrucciones": {
+    "descripcion": "Define la posicion X,Y de cada interseccion en pantalla",
+    "rango_x": "0 a 900 — izquierda a derecha",
+    "rango_y": "0 a 600 — arriba a abajo",
+    "referencia": "0,0 es esquina superior izquierda de la ventana"
+  },
+
+  "posiciones": {
+    "0":  { "x": 450, "y": 300, "zona": "centro" },
+    "1":  { "x": 380, "y": 180, "zona": "centro" },
+    "2":  { "x": 540, "y": 210, "zona": "centro" },
+    "3":  { "x": 480, "y": 520, "zona": "sur"    },
+    "4":  { "x": 320, "y": 320, "zona": "centro" },
+    "5":  { "x": 200, "y": 430, "zona": "sur"    },
+    "6":  { "x": 680, "y":  90, "zona": "norte"  },
+    "7":  { "x": 780, "y": 180, "zona": "norte"  },
+    "8":  { "x": 730, "y": 290, "zona": "norte"  },
+    "9":  { "x": 590, "y": 140, "zona": "norte"  },
+    "10": { "x": 710, "y":  90, "zona": "norte"  },
+    "11": { "x": 610, "y": 260, "zona": "centro" },
+    "12": { "x": 340, "y": 510, "zona": "sur"    },
+    "13": { "x": 500, "y": 240, "zona": "centro" },
+    "14": { "x": 360, "y": 440, "zona": "sur"    },
+    "15": { "x": 210, "y": 530, "zona": "sur"    },
+    "16": { "x":  90, "y": 360, "zona": "oeste"  },
+    "17": { "x": 440, "y": 380, "zona": "centro" },
+    "18": { "x": 820, "y": 130, "zona": "norte"  },
+    "19": { "x": 300, "y": 380, "zona": "centro" }
+  }
+}

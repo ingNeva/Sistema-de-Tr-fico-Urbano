@@ -1,0 +1,41 @@
+{
+  "_instrucciones": {
+    "ventana": "Tamaño en pixeles de la ventana del grafo",
+    "colores": "Puedes usar nombres (red, blue) o codigos hex (#FF5733)",
+    "animacion": "velocidad_ms es el tiempo entre cada paso en milisegundos"
+  },
+
+  "ventana": {
+    "ancho": 900,
+    "alto": 600,
+    "titulo": "Sistema de Trafico Urbano",
+    "fondo": "#1a1a2e"
+  },
+
+  "nodos": {
+    "radio": 22,
+    "color_normal": "#4a90d9",
+    "color_origen": "#2ecc71",
+    "color_destino": "#e74c3c",
+    "color_en_ruta": "#f39c12",
+    "color_texto": "#ffffff",
+    "tamano_texto": 12
+  },
+
+  "caminos": {
+    "color_normal": "#4a4a6a",
+    "color_en_ruta": "#f39c12",
+    "grosor_normal": 2,
+    "grosor_en_ruta": 4,
+    "mostrar_pesos": true,
+    "color_peso": "#aaaacc",
+    "tamano_peso": 11
+  },
+
+  "animacion": {
+    "activar": true,
+    "velocidad_ms": 600,
+    "resaltar_nodo_activo": true,
+    "color_nodo_activo": "#9b59b6"
+  }
+}

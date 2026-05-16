@@ -1,0 +1,102 @@
+================================================================
+  SISTEMA DE TRAFICO URBANO — PEREIRA
+  Archivo de configuracion del mapa
+  Puedes editarlo libremente para agregar o quitar puntos
+================================================================
+
+  INSTRUCCIONES:
+  - Este archivo define el mapa de intersecciones de la ciudad
+  - Puedes agregar nuevas intersecciones y caminos al final
+  - No borres las palabras INTERSECCIONES: y CAMINOS:
+  - El ID debe ser un numero entero desde 0 sin saltar numeros
+  - El tiempo es cuanto demora recorrer ese camino en minutos
+  - Los caminos funcionan en ambas direcciones
+  - Las lineas que empiezan con # son comentarios (se ignoran)
+
+================================================================
+
+INTERSECCIONES:
+# Una interseccion es cualquier punto del mapa:
+# una esquina, un parque, una estacion, un edificio, etc.
+#
+# formato -> ID | NOMBRE
+
+0  | Plaza de Bolivar
+1  | Av. Circunvalar - Cll. 19
+2  | Centro Comercial Alcides
+3  | Terminal de Transportes
+4  | Av. 30 de Agosto - Cra. 7
+5  | Barrio Cuba
+6  | Barrio El Jardin
+7  | Universidad Tecnologica
+8  | Av. Las Americas
+9  | Parque El Lago
+10 | Barrio Pinares
+11 | Clinica Los Rosales
+12 | Megacentro Condina
+13 | Barrio Boston
+14 | Av. Sur - Cra. 13
+15 | Barrio Villasantana
+16 | Aeropuerto Matecana
+17 | Barrio San Joaquin
+18 | Centro Comercial Unicentro
+19 | Estadio Hernan Ramirez
+
+# Agrega tus propias intersecciones aqui abajo:
+# 20 | Mi Nueva Interseccion
+
+
+CAMINOS:
+# Un camino es la calle o via que conecta dos intersecciones.
+# El tiempo es cuanto demora recorrer ese camino en minutos
+# en condiciones normales de trafico.
+#
+# formato -> DESDE | HASTA | TIEMPO(minutos)
+#
+# Ejemplo:
+# 0 | 1 | 5   significa: de Plaza de Bolivar a Av. Circunvalar = 5 min
+
+# ── Centro historico ─────────────────────────────────────────
+0  | 1  | 4
+0  | 13 | 3
+0  | 17 | 5
+1  | 2  | 6
+1  | 9  | 7
+1  | 11 | 8
+
+# ── Corredor Av. 30 de Agosto ────────────────────────────────
+2  | 4  | 5
+4  | 5  | 8
+4  | 14 | 6
+4  | 19 | 7
+5  | 15 | 9
+5  | 16 | 12
+
+# ── Zona norte ───────────────────────────────────────────────
+6  | 7  | 5
+6  | 10 | 6
+7  | 8  | 4
+7  | 18 | 9
+8  | 9  | 5
+8  | 11 | 6
+8  | 18 | 7
+
+# ── Zona sur ─────────────────────────────────────────────────
+3  | 12 | 8
+3  | 14 | 7
+12 | 15 | 10
+14 | 15 | 6
+
+# ── Conexiones transversales ─────────────────────────────────
+9  | 10 | 6
+9  | 13 | 4
+10 | 11 | 5
+10 | 18 | 8
+11 | 17 | 6
+13 | 17 | 4
+16 | 19 | 11
+17 | 19 | 9
+18 | 19 | 7
+
+# Agrega tus propios caminos aqui abajo:
+# 19 | 20 | 5   significa: de Estadio a Mi Nueva Interseccion = 5 min
