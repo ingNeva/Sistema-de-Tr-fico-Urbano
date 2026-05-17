@@ -1,131 +1,78 @@
-# 🚦 Sistema Integral de Tráfico Urbano + IA
+# Sistema de Tráfico Urbano con Dijkstra
 
-> Proyecto de Estructuras de Datos — Universidad Tecnológica de Pereira  
-> Diego Alexander Neva Patiño · Jacobo Piedrahita Hurtado  
-> Grafo no dirigido ponderado con algoritmo de Dijkstra, visualización interactiva en navegador y factor de congestión inteligente por hora del día.
-
----
-
-## 📸 Vista previa
-
-![Vista del grafo interactivo](assets/preview.png)
-
-> El sistema calcula la ruta óptima entre dos intersecciones y la muestra animada en el navegador. Los nodos se distribuyen automáticamente sin importar cuántos haya.
+Proyecto final de Estructuras de Datos — Universidad Tecnológica de Pereira  
+Diego Alexander Neva Patiño · Jacobo Piedrahita Hurtado
 
 ---
 
-## ¿Qué hace este proyecto?
+## ¿De qué va esto?
 
-Imagina que estás en **Plaza de Bolívar** y quieres llegar al **Aeropuerto Matecana** de Pereira. Este sistema:
+La idea surgió de un problema concreto: ¿cómo sabe una app de navegación cuál camino es más rápido, si el tráfico cambia dependiendo de la hora? Decidimos implementarlo desde cero — grafo en C, lógica en Python, visualización en el navegador — sin librerías mágicas que hagan el trabajo sucio.
 
-1. Lee el mapa de la ciudad desde un archivo de texto editable
-2. Calcula automáticamente la ruta más rápida según el tráfico actual
-3. Abre el navegador con el mapa animado e interactivo
-4. Ajusta los tiempos según la hora del día — no es lo mismo viajar a las 8am que a las 2pm
+El sistema modela las intersecciones de Pereira como un grafo no dirigido ponderado. Dijkstra calcula la ruta más corta, pero los pesos no son fijos: a las 8am una vía puede costar el doble que a las 2am. Eso lo manejamos con factores de congestión configurables por franja horaria.
 
-Todo esto sin instalar nada extra más allá de Python y un compilador de C.
+Si querés probar: de **Plaza de Bolívar** al **Aeropuerto Matecaña**, el sistema te da la ruta óptima en milisegundos y la muestra animada en el navegador.
 
 ---
 
-## 🗂️ Estructura del proyecto
+## Archivos del proyecto
 
 ```
 trafico_urbano/
-├── datos.txt               ← Mapa de la ciudad (editable por el usuario)
-├── config_visual.json      ← Colores, tamaño de ventana, animación
-├── config_sistema.json     ← Factor de congestión por hora del día
-├── trafico.h               ← Declaraciones de estructuras y funciones en C
-├── trafico.c               ← Lógica del grafo y algoritmo de Dijkstra en C
-├── trafico.dll             ← Librería compilada (se genera con gcc)
-├── main.py                 ← Programa principal en Python
-├── generar_html.py         ← Genera la visualización interactiva
-└── grafo.html              ← Se genera automáticamente al ejecutar
+├── datos.txt               ← el mapa de la ciudad, editable a mano
+├── config_visual.json      ← colores y parámetros de animación
+├── config_sistema.json     ← factores de congestión por hora
+├── trafico.h               ← declaraciones en C
+├── trafico.c               ← grafo + Dijkstra
+├── trafico.dll             ← librería compilada (la generás vos con gcc)
+├── main.py                 ← punto de entrada
+├── generar_html.py         ← construye la visualización
+└── grafo.html              ← se genera solo al ejecutar
 ```
 
 ---
 
-## 🚀 Guía rápida — Para usuarios
+## Cómo correrlo
 
-### 1. Requisitos
-
-| Herramienta | Cómo obtenerla |
-|-------------|---------------|
-| Python 3.x  | [python.org](https://www.python.org/downloads/) |
-| MSYS2 + GCC | [msys2.org](https://www.msys2.org/) → instalar `mingw-w64-ucrt-x86_64-gcc` |
-| Navegador   | Chrome, Edge o Firefox (ya lo tienes) |
-
-### 2. Clonar el repositorio
+**Requisitos:** Python 3, GCC (vía MSYS2 UCRT64), cualquier navegador.
 
 ```bash
+# 1. Clonar
 git clone https://github.com/tu-usuario/trafico-urbano.git
 cd trafico-urbano
-```
 
-### 3. Compilar la librería C
-
-Abre **MSYS2 UCRT64** y ejecuta:
-
-```bash
-cd /ruta/del/proyecto
+# 2. Compilar la librería (desde MSYS2 UCRT64)
 gcc -shared -Wall -o trafico.dll trafico.c -lm
-```
 
-### 4. Ejecutar el sistema
-
-```bash
+# 3. Ejecutar
 python main.py
 ```
 
-El programa mostrará las intersecciones disponibles, pedirá origen y destino, calculará la ruta óptima y abrirá el navegador automáticamente.
+El programa lista las intersecciones, pedís origen y destino, y abre el grafo en el navegador automáticamente.
 
-### 5. Personalizar el mapa
+---
 
-Abre `datos.txt` con cualquier editor de texto. El archivo tiene instrucciones claras adentro — puedes agregar intersecciones y caminos sin saber programar.
+## Agregar intersecciones al mapa
+
+`datos.txt` tiene un formato simple, no hace falta saber programar para editarlo:
 
 ```
 INTERSECCIONES:
-# formato -> ID | NOMBRE
+# ID | NOMBRE
 20 | Mi Nueva Interseccion
 
 CAMINOS:
-# formato -> DESDE | HASTA | TIEMPO(minutos)
+# DESDE | HASTA | TIEMPO(minutos)
 19 | 20 | 8
 ```
 
 ---
 
-## ⚙️ Guía técnica — Para desarrolladores
+## Lo técnico
 
-### Arquitectura del sistema
+### El núcleo en C
 
-```
-datos.txt + config_*.json
-        ↓
-      main.py
-    ↙         ↘
-trafico.dll   generar_html.py
-  (C/ctypes)    (visualización)
-        ↓
-    grafo.html
-        ↓
-    navegador
-```
-
-### Capa C — `trafico.c`
-
-Implementa la lógica central del sistema con las siguientes funciones:
-
-| Función | Descripción |
-|---------|-------------|
-| `inicializar_grafo()` | Limpia la memoria antes de cargar datos |
-| `agregar_interseccion()` | Registra un nodo con su ID y nombre |
-| `agregar_camino()` | Inserta arista bidireccional con validaciones |
-| `dijkstra()` | Calcula distancias mínimas desde el origen con complejidad $O(V^2)$ |
-| `reconstruir_ruta()` | Recorre el arreglo de predecesores y devuelve la ruta en orden |
-| `calcular_posiciones()` | Asigna coordenadas iniciales a los nodos |
-| `evaluar_grafo()` | Función principal que une todo y retorna un `ResultadoRuta` |
-
-### Estructuras de datos principales
+Toda la lógica del grafo vive en `trafico.c`. Las estructuras principales:
 
 ```c
 typedef struct {
@@ -154,9 +101,20 @@ typedef struct {
 } ResultadoRuta;
 ```
 
-### Puente C ↔ Python con `ctypes`
+Las funciones expuestas a Python:
 
-Python carga la librería compilada y llama las funciones C directamente:
+| Función | Qué hace |
+|---------|----------|
+| `inicializar_grafo()` | Limpia memoria antes de cargar datos |
+| `agregar_interseccion()` | Registra un nodo |
+| `agregar_camino()` | Inserta arista bidireccional con validaciones |
+| `dijkstra()` | Distancias mínimas desde el origen — O(V²) |
+| `reconstruir_ruta()` | Recorre predecesores y devuelve la ruta |
+| `evaluar_grafo()` | Función principal, retorna un `ResultadoRuta` |
+
+### Puente C ↔ Python
+
+Python no llama a un ejecutable sino directamente a la librería compilada usando `ctypes`:
 
 ```python
 dll = ctypes.CDLL("trafico.dll")
@@ -168,54 +126,33 @@ resultado = dll.evaluar_grafo(
 )
 ```
 
-### Visualización — Layout de fuerzas
+### Visualización con layout de fuerzas
 
-El grafo se renderiza en un `<canvas>` HTML con un algoritmo de layout de fuerzas implementado en JavaScript. Tres fuerzas actúan simultáneamente:
+El grafo se dibuja en un `<canvas>` HTML. En vez de posiciones fijas, usamos un simulador de fuerzas en JavaScript — los nodos se repelen entre sí, las aristas los atraen, y una gravedad central evita que todo se disperse. La simulación para sola cuando la energía converge, así funciona bien con 100+ nodos sin que quede ilegible.
 
-| Fuerza | Efecto |
-|--------|--------|
-| **Repulsión** entre nodos | Los separa para evitar solapamiento |
-| **Atracción** por aristas | Acerca nodos conectados, longitud proporcional al peso |
-| **Gravedad** al centro | Evita que los nodos se escapen del canvas |
+### Factor de congestión
 
-La simulación se detiene automáticamente cuando la energía total del sistema converge. Esto permite escalar a **100+ nodos** sin degradación visual.
+El peso real de cada arista se calcula en tiempo de ejecución:
 
-### Factor de congestión — IA
-
-Los pesos de las aristas se multiplican dinámicamente según la hora del día:
-
-```python
-peso_real = tiempo_base × factor_congestión(hora_actual)
+```
+peso_real = tiempo_base × factor(hora_actual)
 ```
 
-Los factores se configuran en `config_sistema.json`:
+Los factores están en `config_sistema.json` y se pueden cambiar sin tocar código:
 
-| Franja horaria | Factor | Efecto |
-|---------------|--------|--------|
-| Madrugada (0–5h) | ×0.7 | Vías libres |
-| Mañana pico (6–9h) | ×2.5 | Tráfico alto |
-| Mediodía (12–14h) | ×1.5 | Tráfico moderado |
-| Tarde pico (17–20h) | ×2.8 | Máxima congestión |
-| Noche (20–23h) | ×0.9 | Tráfico bajo |
-
-### Compilación detallada
-
-```bash
-# Solo verificar sintaxis
-gcc -Wall -Wextra -fsyntax-only trafico.c -lm
-
-# Generar librería compartida
-gcc -shared -Wall -o trafico.dll trafico.c -lm
-
-# Verificar funciones exportadas
-nm trafico.dll | grep -E "inicializar|agregar|dijkstra|reconstruir|calcular|evaluar"
-```
+| Franja | Factor | Por qué |
+|--------|--------|---------|
+| Madrugada (0–5h) | ×0.7 | Vías vacías |
+| Pico mañana (6–9h) | ×2.5 | Todo el mundo sale al mismo tiempo |
+| Mediodía (12–14h) | ×1.5 | Moderado |
+| Pico tarde (17–20h) | ×2.8 | Lo peor del día |
+| Noche (20–23h) | ×0.9 | Ya despejan |
 
 ---
 
-## 🎨 Personalización visual
+## Personalización visual
 
-Edita `config_visual.json` para cambiar colores, tamaños y animación sin tocar el código:
+`config_visual.json` controla colores y animación:
 
 ```json
 {
@@ -234,66 +171,44 @@ Edita `config_visual.json` para cambiar colores, tamaños y animación sin tocar
 
 ---
 
-## 🧩 Interactividad del grafo
+## Interacción con el grafo
 
-| Acción | Cómo hacerlo |
-|--------|-------------|
+| Acción | Cómo |
+|--------|------|
 | Zoom | Rueda del mouse |
-| Mover el grafo | Click y arrastrar |
+| Mover el mapa | Click y arrastrar |
 | Reiniciar vista | Botón "Reiniciar zoom" |
 | Pausar animación | Botón "Pausar animación" |
 
 ---
 
-## 📊 Complejidad del algoritmo
+## Complejidad
 
 | Operación | Complejidad |
 |-----------|-------------|
 | Insertar nodo | O(1) |
 | Insertar arista | O(1) |
-| Dijkstra (implementación actual) | O(V²) |
+| Dijkstra (arreglo simple) | O(V²) |
 | Reconstruir ruta | O(V) |
-| Layout de fuerzas (convergencia) | O(V² × iteraciones) |
+| Layout de fuerzas | O(V² × iteraciones) |
 
-> Para grafos grandes (500+ nodos) se puede mejorar Dijkstra usando una cola de prioridad (min-heap) para lograr O((V+E) log V).
-
----
-
-## 🔧 Posibles mejoras futuras
-
-- [ ] Implementar Dijkstra con min-heap para mejor rendimiento
-- [ ] Agregar algoritmo A* con heurística geográfica
-- [ ] Leer datos desde una API de tráfico real (Google Maps, OpenStreetMap)
-- [ ] Interfaz web para agregar nodos y aristas visualmente sin editar el archivo
-- [ ] Soporte para calles de un solo sentido (grafo dirigido)
-- [ ] Exportar la ruta como archivo de texto o imagen
+Para grafos grandes (500+ nodos) se puede mejorar Dijkstra con un min-heap y bajar a O((V+E) log V). Lo dejamos en la lista de pendientes.
 
 ---
 
-## 👥 Equipo
+## Cosas que quedaron pendientes
 
-- Diego Alexander Neva Patiño
+- Dijkstra con min-heap
+- A* con heurística geográfica
+- Leer datos desde OpenStreetMap
+- Editor visual de nodos y aristas en el navegador
+- Soporte para calles de un solo sentido
+
+---
+
+## Equipo
+
+- Diego Alexander Neva Patiño  
 - Jacobo Piedrahita Hurtado
 
----
-
-## 🏛️ Información académica
-
-| | |
-|--|--|
-| **Universidad** | Universidad Tecnológica de Pereira |
-| **Curso** | Estructuras de Datos |
-| **Programa** | Ingeniería de Sistemas |
-| **Año** | 2026 |
-
----
-
-## 📄 Licencia
-
-Este proyecto fue desarrollado con fines académicos para la Universidad Tecnológica de Pereira.
-
----
-
-<div align="center">
-  <sub>Hecho con C, Python y JavaScript · Universidad Tecnológica de Pereira · 2026</sub>
-</div>
+Estructuras de Datos · Ingeniería de Sistemas · UTP · 2026
