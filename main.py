@@ -1,15 +1,32 @@
 import ctypes
 import json
 import os
+import sys
 import datetime
 
 # ============================================================
-#  CARGAR LIBRERIA C
+#  CARGAR LIBRERIA C  (Windows: .dll  |  Linux: .so)
 # ============================================================
 
-# UCRT64 genera la dll en la misma carpeta del script
 BASE = os.path.dirname(os.path.abspath(__file__))
-dll  = ctypes.CDLL(os.path.join(BASE, "trafico.dll"))
+
+if sys.platform == "win32":
+    lib_name = "trafico.dll"
+else:
+    # En Linux la convencion es libtrafico.so, pero si compilaste
+    # con -o trafico.so puedes cambiar este valor a "trafico.so"
+    lib_name = "libtrafico.so"
+
+lib_path = os.path.join(BASE, lib_name)
+
+if not os.path.exists(lib_path):
+    print(f"ERROR: No se encontro la libreria '{lib_name}' en:\n  {BASE}")
+    if sys.platform != "win32":
+        print("\nPara compilarla en Debian/Linux ejecuta:")
+        print("  gcc -shared -fPIC -o libtrafico.so trafico.c -lm")
+    sys.exit(1)
+
+dll = ctypes.CDLL(lib_path)
 
 # ============================================================
 #  ESTRUCTURAS — deben coincidir exactamente con trafico.h
@@ -76,7 +93,6 @@ dll.evaluar_grafo.argtypes = [
     ctypes.c_int
 ]
 dll.evaluar_grafo.restype = ResultadoRuta
-
 
 # ============================================================
 #  LEER CONFIGURACION JSON
@@ -228,6 +244,31 @@ def leer_posiciones(config_sistema):
         pos_y[i] = coords["y"]
 
     return pos_x, pos_y, n
+
+# ============================================================
+#  ABRIR EL HTML EN EL NAVEGADOR (multiplataforma)
+# ============================================================
+
+def abrir_navegador(ruta_html):
+    import subprocess
+    if sys.platform == "win32":
+        os.startfile(ruta_html)
+    elif sys.platform == "darwin":
+        subprocess.Popen(["open", ruta_html])
+    else:
+        # Linux: intentar xdg-open, luego navegadores comunes como fallback
+        navegadores = ["xdg-open", "firefox", "chromium", "chromium-browser", "google-chrome"]
+        for nav in navegadores:
+            try:
+                subprocess.Popen([nav, ruta_html],
+                                 stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+                return
+            except FileNotFoundError:
+                continue
+        print(f"  No se pudo abrir el navegador automaticamente.")
+        print(f"  Abre manualmente: {ruta_html}")
+
 # ============================================================
 #  PROGRAMA PRINCIPAL
 # ============================================================
@@ -274,12 +315,14 @@ def main():
         grafo, resultado, nodos
     )
 
-    # Generar el HTML (paso 9)
+    # Generar el HTML
     from generar_html import generar_html
-    generar_html(nodos_html, aristas_html, ruta_ids,
-                 origen, destino, resultado, config_visual)
+    ruta_html = generar_html(nodos_html, aristas_html, ruta_ids,
+                             origen, destino, resultado, config_visual)
 
     print("  Abriendo visualizacion en el navegador...")
+    if ruta_html:
+        abrir_navegador(ruta_html)
     print("=" * 50 + "\n")
 
 if __name__ == "__main__":
